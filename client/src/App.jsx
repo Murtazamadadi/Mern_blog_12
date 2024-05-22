@@ -5,13 +5,15 @@ import SignIn from "./pages/SignIn"
 import Project from "./pages/Project"
 import Dashboard from "./pages/Dashboard"
 import Aboute from "./pages/Aboute"
+import Header from "./components/Header"
 
 function App() {
   return (
     <BrowserRouter>
+    <Header/>
     <Routes>
       <Route path="/" element={<Home/>}/>
-      <Route path="/aboute" element={<Aboute/>}/>
+      <Route path="/about" element={<Aboute/>}/>
       <Route path="/dashboard" element={<Dashboard/>}/>
       <Route path="/projects" element={<Project/>}/>
       <Route path="/sign-in" element={<SignIn/>}/>
