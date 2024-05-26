@@ -2,12 +2,18 @@ import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 
+
+import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
+import { useDispatch,useSelector } from 'react-redux';
+
 export default function SignUp() {
+  const dispatch=useDispatch()
+  const {loading,error:errorMessage}=useSelector(state=>state.user)
   //  part-2 
   const [formData,setFormData]=useState({})
   // part-4
-  const [errorMessage,setErrorMessage]=useState(null)
-  const [loading,setLoading]=useState(false)
+  // const [errorMessage,setErrorMessage]=useState(null)
+  // const [loading,setLoading]=useState(false)
 
   const navigate=useNavigate()
 
@@ -22,12 +28,11 @@ export default function SignUp() {
     e.preventDefault();
     
     if(!formData.email || !formData.password){
-      return setErrorMessage("وارید کردن تمام اطلاعات الزامی می باشد")
+      return dispatch(signInFailure("وارید کردن تمام اطلاعات الزامی می باشد"))
     }
     
     try{
-      setLoading(true)
-      setErrorMessage(false)
+      dispatch(signInStart())
       const res=await fetch("/api/auth/sign-in",{
         method:"POST",
         headers:{"content-type":"application/json"},
@@ -36,17 +41,16 @@ export default function SignUp() {
       const data=await res.json()
       
     if(data.success===false){
-      return setErrorMessage(data.message)
+      return dispatch(signInFailure(data.message))
     }
 
     if(res.ok){
+      dispatch(signInSuccess(data))
       navigate("/")
     }
-    
-    setLoading(false)
+
     }catch(error){
-      setErrorMessage(error.message)
-      setLoading(false)
+      dispatch(signInFailure(error.message))
     }
   }
 
