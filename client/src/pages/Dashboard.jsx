@@ -22,14 +22,7 @@ function Dashboard() {
       <div className="md:w-56">
         <DashSidbar/>
       </div>
-<<<<<<< HEAD
-
       {tab==="profile" && <DashProfile/>}
-=======
-      <div>
-        {tab==="profile" && <DashProfile/>}
-      </div>
->>>>>>> 2eb4e3d2ff0a533d595f9eee08eac4ee6e904fa6
     </div>
   )
 }
