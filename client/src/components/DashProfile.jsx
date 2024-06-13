@@ -11,7 +11,7 @@ import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import {
-  updateStart,updateSucess,updateFailure,deleteStart,deleteSucess,deleteFailure
+  updateStart,updateSucess,updateFailure,deleteStart,deleteSucess,deleteFailure,signOoutSuccess
 } from "../redux/user/userSlice";
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
@@ -157,6 +157,26 @@ export default function DashProfile() {
       console.log(error)
     }
   }
+
+  // ================================================================ Sign Out user
+  const handleSignOut=async()=>{
+
+    try{
+      const res=await fetch("/api/user/sign-out",{
+        method:"POST"
+      })
+
+      const data=await res.json()
+
+      if(!res.ok){
+        console.log(data.message)
+      }else{
+        dispatch(signOoutSuccess())
+      }
+    }catch(error){
+      console.log(error)
+    }
+  }
  
 
   return (
@@ -241,7 +261,7 @@ export default function DashProfile() {
         <span className='cursor-pointer' onClick={()=>setShowModel(true)}>
           حذف حساب کاربری
         </span>
-        <span className='cursor-pointer' onClick={handleDeleteUser}>
+        <span className='cursor-pointer' onClick={handleSignOut}>
           خارج شدن
         </span>
       </div>
