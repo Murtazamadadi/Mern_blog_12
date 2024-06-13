@@ -12,9 +12,7 @@ export default function SignUp() {
   const {loading,error:errorMessage}=useSelector(state=>state.user)
   //  part-2 
   const [formData,setFormData]=useState({})
-  // part-4
-  // const [errorMessage,setErrorMessage]=useState(null)
-  // const [loading,setLoading]=useState(false)
+ 
 
   const navigate=useNavigate()
 
