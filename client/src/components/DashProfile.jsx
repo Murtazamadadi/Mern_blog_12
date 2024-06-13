@@ -1,4 +1,4 @@
-import { Alert, Button, TextInput } from 'flowbite-react';
+import { Alert, Button, Modal, TextInput } from 'flowbite-react';
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -11,11 +11,11 @@ import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import {
-  updateStart,updateSucess,updateFailure
+  updateStart,updateSucess,updateFailure,deleteStart,deleteSucess,deleteFailure
 } from "../redux/user/userSlice";
 import { useDispatch } from 'react-redux';
-// import { HiOutlineExclamationCircle } from 'react-icons/hi';
-import { Link } from 'react-router-dom';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
+// import { Link } from 'react-router-dom';
 
 export default function DashProfile() {
   const { currentUser, error, loading } = useSelector((state) => state.user);
@@ -31,6 +31,8 @@ export default function DashProfile() {
   const [formData, setFormData] = useState({});
   const filePickerRef = useRef();
   const dispatch = useDispatch();
+  // =============================================================================== Delete user
+  const [showModel,setShowModel]=useState(false)
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -131,7 +133,30 @@ export default function DashProfile() {
       setUpdateUserError(error.message);
     }
   };
-  
+
+
+  // =================================================================== delete user
+
+  async function handleDeleteUser(){
+    setShowModel(false)
+
+    try{
+      dispatch(deleteStart())
+      const res=await fetch(`/api/user/delete/${currentUser._id}` ,{
+        method:"DELETE"
+      })
+
+      const data=await res.json()
+
+      if(!res.ok){
+        dispatch(deleteFailure(data.message))
+      }else{
+        dispatch(deleteSucess())
+      }
+    }catch(error){
+      console.log(error)
+    }
+  }
  
 
   return (
@@ -213,10 +238,10 @@ export default function DashProfile() {
         </Button>
       </form>
       <div className='text-red-500 flex justify-between mt-5'>
-        <span className='cursor-pointer'>
+        <span className='cursor-pointer' onClick={()=>setShowModel(true)}>
           حذف حساب کاربری
         </span>
-        <span className='cursor-pointer'>
+        <span className='cursor-pointer' onClick={handleDeleteUser}>
           خارج شدن
         </span>
       </div>
@@ -235,6 +260,32 @@ export default function DashProfile() {
           {error}
         </Alert>
       )}
+
+      <Modal
+      show={showModel}
+      onClose={()=>setShowModel(false)}
+      popup
+      size="md"
+      >
+        <Modal.Header/>
+        <Modal.Body>
+        <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              شما مطمعین هستین که میخواهید اکوانت تان را حذف کنید؟
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure' onClick={handleDeleteUser}>
+                بلی
+              </Button>
+              <Button color='gray' onClick={() => setShowModel(false)}>
+                نخیر
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
     </div>
   );
 }
