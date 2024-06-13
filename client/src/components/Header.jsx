@@ -2,6 +2,8 @@ import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
 import { Link,useLocation } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { FaMoon, FaSun} from 'react-icons/fa';
+import { signOoutSuccess } from '../redux/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +16,31 @@ export default function Header() {
     const {currentUser}=useSelector((state)=>state.user)
     const dispatch=useDispatch()
     const {theme}=useSelector(state=>state.theme)
+
+
+    // ============================================ singout functionality
+    const navigate=useNavigate()
+    const handleSignOut=async()=>{
+
+      try{
+        const res=await fetch("/api/user/sign-out",{
+          method:"POST"
+        })
+  
+        const data=await res.json()
+  
+        if(!res.ok){
+          console.log(data.message)
+        }else{
+          dispatch(signOoutSuccess())
+          navigate("/sign-in")
+        }
+      }catch(error){
+        console.log(error)
+      }
+    }
+   
+  
     
  
   return (
@@ -62,7 +89,7 @@ export default function Header() {
               <Dropdown.Item>پروفایل</Dropdown.Item>
             </Link>
             <Dropdown.Divider/>
-             <Dropdown.Item>خارج شدن</Dropdown.Item>
+             <Dropdown.Item onClick={handleSignOut}>خارج شدن</Dropdown.Item>
           </Dropdown>
         ):(
 
