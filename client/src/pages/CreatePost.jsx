@@ -1,9 +1,58 @@
-import { Button, FileInput, Select, TextInput } from 'flowbite-react';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
+import { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
+import { app } from '../firebase';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import "react-circular-progressbar/dist/styles.css"
 
 export default function CreatePost() {
+
+    const [file,setFile]=useState(null)
+    const [imageUploadProgress,setImageUploadProgress]=useState(null)
+    const [imageUploadError,setImageUploadError]=useState(null)
+    const [formData,setFormData]=useState({})
+    // ============================================== upload image functionality
+
+    
+  const handleUpdloadImage = async () => {
+    try {
+      if (!file) {
+          setImageUploadError('لطفا فایلی را انتخاب کنید');
+        return;
+      }
+      setImageUploadError(null);
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + '-' + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setImageUploadProgress(progress.toFixed(0));
+        },
+        // eslint-disable-next-line no-unused-vars
+        (error) => {
+          setImageUploadError('بارگزاری به مشکل برخورد');
+          setImageUploadProgress(null);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImageUploadProgress(null);
+            setImageUploadError(null);
+            setFormData({ ...formData, image: downloadURL });
+          });
+        }
+      );
+    } catch (error) {
+      setImageUploadError('بارگزاری تصویر به مشکل برخورد');
+      setImageUploadProgress(null);
+      console.log(error);
+    }
+  };
   
  
   return (
@@ -29,16 +78,36 @@ export default function CreatePost() {
           <FileInput
             type='file'
             accept='image/*'
+            onChange={(e)=>setFile(e.target.files[0])}
           />
           <Button
             type='button'
             gradientDuoTone='purpleToBlue'
             size='sm'
             outline
+            onClick={handleUpdloadImage}
+            disabled={imageUploadProgress}
           >
-           بارگزاری تصویر
+           {imageUploadProgress ?(
+            <div className='w-16 h-16'>
+                <CircularProgressbar
+                value={imageUploadProgress}
+                text={`${imageUploadProgress || 0}`}
+                />
+            </div>
+           ):(
+            "بارگزاری تصویر"
+           )}
           </Button>
         </div>
+        {imageUploadError && (<Alert color="failure">{imageUploadError}</Alert>)}
+        {formData.image && (
+            <img
+            src={formData.image}
+            alt='upload'
+            className=' w-full h-62 object-cover'
+            />
+        )}
         <ReactQuill
           theme='snow'
           placeholder='Write something...'
