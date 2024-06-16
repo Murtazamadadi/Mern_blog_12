@@ -1,14 +1,16 @@
 import { Sidebar, SidebarItem, SidebarItemGroup, SidebarItems } from "flowbite-react"
 import { useEffect, useState } from "react"
-import { HiArrowSmRight, HiUser} from 'react-icons/hi'
+import { HiArrowSmRight, HiDocumentText, HiUser} from 'react-icons/hi'
 import { Link, useLocation } from "react-router-dom"
 import { signOoutSuccess } from "../redux/user/userSlice"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 function DashSidbar() {
     const location=useLocation()
     const [tab,setTab]=useState("")
     const dispatch=useDispatch()
+    // ========================================================== add posts section to the admin dashbord
+    const {currentUser}=useSelector((state)=>state.user)
 
     useEffect(()=>{
         const urlParams=new URLSearchParams(location.search)
@@ -17,6 +19,9 @@ function DashSidbar() {
             setTab(tabFromUrl)
         }
     },[location.search])
+
+
+
 
 
 
@@ -46,17 +51,29 @@ function DashSidbar() {
   return (
     <Sidebar className=" w-full">
         <SidebarItems>
-            <SidebarItemGroup className="flex flex-col gap-1">
+            <SidebarItemGroup className="flex flex-col gap-3">
                 <Link to="/dashboard?tab=profile">
                     <SidebarItem
                     active={tab==="profile"}
                     icon={HiUser}
-                    label="User"
+                    label={currentUser.isadmin ? "Admin":"User"}
                     labelColor="dark"
                     >
                         پروفایل
                     </SidebarItem>
                 </Link>
+
+                {currentUser.isadmin && (
+                  <Link to="/dashboard?tab=posts">
+                    <SidebarItem
+                    active={tab==="posts"}
+                    icon={HiDocumentText}
+                    as="div"
+                    >
+                      پست ها
+                    </SidebarItem>
+                  </Link>
+                )}
 
                 <SidebarItem
                 icon={HiArrowSmRight}
