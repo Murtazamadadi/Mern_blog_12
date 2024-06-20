@@ -65,7 +65,7 @@ const handleSubmit=async(e)=>{
     e.preventDefault()
 
     try{
-        const res=await fetch("/api/post/create-post",{
+        const res=await fetch("/api/posts/create-post",{
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body: JSON.stringify(formData)
