@@ -2,6 +2,7 @@ import Post from "../models/post.model.js";
 import { errorHandler } from "../utils/error.js"
 
 export const create=async(req,res,next)=>{
+
     
     if(!req.user.isadmin){
         return next(errorHandler(403,"شمااجازه ساختن پست را ندارید"))
@@ -31,8 +32,6 @@ export const create=async(req,res,next)=>{
 // ================================================================== get Posts api
 
 export const getPosts=async(req,res,next)=>{
-
-
     try{
         const startIndex=parseInt(req.query.startIndex) || 0;
         const limit=parseInt(req.query.limit) || 9;
@@ -75,3 +74,23 @@ export const getPosts=async(req,res,next)=>{
         next(error)
     }
 }
+
+
+
+// ==================================================== deletePost functionality
+
+
+export const deletepost = async (req,res,next) => {
+
+    if (!req.user.isadmin || req.user.id !== req.params.userId) {
+        console.log("شما اجازه حذف این را ندارید")
+      return next(errorHandler(403, 'You are not allowed to delete this post'));
+    }
+    try {
+      await Post.findByIdAndDelete(req.params.postId);
+      res.status(200).json('The post has been deleted');
+    } catch (error) {
+      next(error);
+    }
+  };
+  
