@@ -5,6 +5,8 @@ import { Link, useLocation } from "react-router-dom"
 import { signOoutSuccess } from "../redux/user/userSlice"
 import { useDispatch, useSelector } from "react-redux"
 
+import { HiOutlineUserGroup } from "react-icons/hi"
+
 function DashSidbar() {
     const location=useLocation()
     const [tab,setTab]=useState("")
@@ -71,6 +73,17 @@ function DashSidbar() {
                     as="div"
                     >
                       پست ها
+                    </SidebarItem>
+                  </Link>
+                )}
+                {currentUser.isadmin && (
+                  <Link to="/dashboard?tab=users">
+                    <SidebarItem
+                    active={tab==="users"}
+                    icon={HiOutlineUserGroup}
+                    as="div"
+                    >
+                    کاربران
                     </SidebarItem>
                   </Link>
                 )}
