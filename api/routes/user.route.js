@@ -8,5 +8,6 @@ const route=express.Router()
 route.put("/update/:userId",verifyToken,updateUser)
 route.delete("/delete/:Id",verifyToken,deleteUser)
 route.post("/sign-out",signout)
+route.get("/get-users",verifyToken,getUsers)
 
 export default route
