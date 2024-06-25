@@ -1,13 +1,21 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import "react-circular-progressbar/dist/styles.css"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import {useSelector} from "react-redux"
 export default function CreatePost() {
+
+  // ============================================== update post 
+    const {currentUser}=useSelector((state)=>state.user)
+
+    // ============================================== update post functionality
+    const {postId}=useParams()
 
     // ============================================== upload image functionality
     const [file,setFile]=useState(null)
@@ -17,6 +25,8 @@ export default function CreatePost() {
     const [formData,setFormData]=useState({})
     const [publishError,setPublishError]=useState(null)
     const navigate=useNavigate()
+
+    console.log(formData)
     
     // ============================================== upload image functionality
 
@@ -64,14 +74,12 @@ const handleSubmit=async(e)=>{
     e.preventDefault()
 
     try{
-        const res=await fetch(`/api/posts/create-post`,{
-            method:"POST",
+        const res=await fetch(`/api/posts/update/${formData._id}/${currentUser._id}`,{
+            method:"PUT",
             headers:{"Content-Type":"application/json"},
             body: JSON.stringify(formData)
         })
         const data=await res.json()
-
-        console.log("datassss",data)
 
         if(!res.ok){
             setPublishError(data.message)
@@ -86,6 +94,32 @@ const handleSubmit=async(e)=>{
         setPublishError("مشکلی در پپلیش پست آمده")
     }
 }
+
+
+//   ============================================================ update post functionality
+
+
+useEffect(()=>{
+    
+    try{
+            const fetchData=async()=>{
+            const res=await fetch(`/api/posts/get-posts?postId=${postId}`)
+            const data=await res.json()
+    
+            if(!res.ok){
+                setPublishError(data.message)
+            }else{
+                setPublishError(null)
+                setFormData(data.posts[0])
+            }
+
+            
+          }
+          fetchData()
+    }catch(error){
+        setPublishError(error.message)
+    }
+},[postId])
   
  
   return (
@@ -100,11 +134,13 @@ const handleSubmit=async(e)=>{
             id='title'
             className='flex-1'
             onChange={(e)=>setFormData({...formData,title:e.target.value})}
+            value={formData.title}
           />
           <Select
+          value={formData?.category}
           onChange={(e)=>setFormData({...formData,category:e.target.value})}
           >
-            <option value='uncategorized'>انتخاب دسته بندی</option>
+            <option value='uncategorized'>uncategorized</option>
             <option value='javascript'>JavaScript</option>
             <option value='reactjs'>React.js</option>
             <option value='nextjs'>Next.js</option>
@@ -150,6 +186,7 @@ const handleSubmit=async(e)=>{
           className='h-72 mb-12'
           required
           onChange={(value)=>setFormData({...formData,content:value})}
+          value={formData.content}
         />
         <Button type='submit' gradientDuoTone='purpleToPink'>
           نشرپست

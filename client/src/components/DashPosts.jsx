@@ -65,9 +65,7 @@ function DashPosts() {
       const res= await fetch(`/api/posts/delete/${psotIdTodelete}/${currentUser._id}`,{
         method:"DELETE"
       })
-
       const data=await res.json()
-
       if(!res.ok){
         console.log(data.message)
       }else{

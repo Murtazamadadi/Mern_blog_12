@@ -94,3 +94,28 @@ export const deletepost = async (req,res,next) => {
     }
   };
   
+
+//   ==================================================== update post
+
+export const updatepost=async(req,res,next)=>{
+
+    if(!req.user.isadmin || req.user.id !== req.params.userId){
+        return next(errorHandler(403,"شما اجازه حذف کردن این پست را ندارید"))
+    }
+
+    try{
+        const updatedpost=await Post.findByIdAndUpdate(req.params.postId,{
+            $set:{
+                title:req.body.title,
+                content:req.body.content,
+                Image:req.body.Image,
+                category:req.body.category
+            }
+        },{new:true}
+    )
+
+    res.status(200).json(updatedpost)
+    }catch(error){
+        next(error)
+    }
+}
