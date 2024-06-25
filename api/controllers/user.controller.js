@@ -63,7 +63,7 @@ export const updateUser = async (req, res, next) => {
 
 
 export const deleteUser=async(req,res,next)=>{
-  if(req.user.id !== req.params.Id){
+  if(!req.user.isadmin && req.user.id !== req.params.Id){
     return next(errorHandler(404,"شمااجازه حذف این اکوانت را ندارید"))
   }
 

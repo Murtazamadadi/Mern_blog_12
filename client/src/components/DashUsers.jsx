@@ -14,7 +14,7 @@ function DashUsers() {
   const [showMore, setShowMore] = useState(true);
   // ======================================================= delete post functionality
   const [showModel, setShowModel] = useState(false);
-//   const [userIdTodelete,setUserIdTodelete]=useState("")
+  const [userIdTodelete,setUserIdTodelete]=useState("")
 
   // ======================================================= fetch post base on userId
   useEffect(() => {
@@ -60,7 +60,25 @@ function DashUsers() {
 
   // ===================================================== handleDeletePost
   const handleDeleteUser = async () => {
-  }
+    setShowModel(false)
+
+    try{
+        const res=await fetch(`/api/user/delete/${currentUser._id}`,{
+            method:"DELETE"
+        })
+
+        const data=await res.json()
+        if(res.ok){
+           setUsers((prev)=> prev.filter((user)=> user._id !== userIdTodelete)) 
+           setShowModel(false)
+        }else{
+            console.log(data.message)
+        }
+    }catch(error){
+        console.log(error)
+    }
+
+}
 
   return (
     <div
@@ -106,7 +124,7 @@ function DashUsers() {
                       <span
                         onClick={()=>{
                           setShowModel(true)
-                        //   setUserIdTodelete(user._id)
+                          setUserIdTodelete(user._id)
                         }}
 
                         className="font-medium text-red-500 hover:underline cursor-pointer"
