@@ -10,6 +10,8 @@ function DashUsers() {
   const { currentUser } = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
 
+
+
   // ======================================================= show more button functionality
   const [showMore, setShowMore] = useState(true);
   // ======================================================= delete post functionality
@@ -113,7 +115,7 @@ function DashUsers() {
                     <Table.Cell>
                       <Link
                         className="font-medium text-gray-900 dark:text-white"
-                        to={`/post/${user.slug}`}
+                        to={`/posts/${user.slug}`}
                       >
                         {user.username}
                       </Link>
