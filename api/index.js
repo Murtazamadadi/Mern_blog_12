@@ -5,6 +5,7 @@ import dotenv from "dotenv"
 import userRouter from "./routes/user.route.js"
 import authRouter from "./routes/auth.route.js"
 import postRouter from "./routes/post.route.js"
+import commentRouter from "./routes/comment.route.js"
 import cookieParser from "cookie-parser"
 
 
@@ -32,6 +33,7 @@ app.listen(3000,()=>{
 app.use("/api/user",userRouter)
 app.use("/api/auth",authRouter)
 app.use("/api/posts",postRouter)
+app.use("/api/comment",commentRouter)
 
 
 // =========================================Middleware
