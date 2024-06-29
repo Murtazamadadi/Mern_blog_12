@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 // eslint-disable-next-line react/prop-types
 export default function Comment({ comments }) {
 
-  console.log(comments)
+  // console.log(comments)
   const [user, setUser] = useState({});
   // console.log(user);
 
@@ -48,12 +48,3 @@ export default function Comment({ comments }) {
 
 
 
-// eslint-disable-next-line react/prop-types
-// function Comment({commentss}) {
-//   console.log(commentss.userId)
-//   return (
-//     <div>Comment</div>
-//   )
-// }
-
-// export default Comment

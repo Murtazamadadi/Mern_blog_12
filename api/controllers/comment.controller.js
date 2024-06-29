@@ -39,3 +39,29 @@ export const getPostComments=async(req,res,next)=>{
         next(error)
     }
 }
+
+
+// ==================================================== Like Comment 
+export const LikeComment=async(req,res,next)=>{
+ try{
+    const comment=await Comment.findbyId(req.params.commentId)
+
+    if(!comment){
+        return next(errorHandler(404,"کامنت پیدا نشد"))
+    }
+
+    const userIndex=comment.likes.indexOf(req.user.id)
+    if(userIndex === -1){
+        comment.nuberOfLikes+=1
+        comment.push(req.user.id)
+    }else{
+        comment.nuberOfLikes-=1
+        comment.splice(userIndex,1)
+    }
+
+    await comment.save()
+    res.status(200).json(comment)
+ }catch(errro){
+    next(errro)
+ } 
+}
