@@ -90,3 +90,25 @@ export const EditComment=async(req,res,next)=>{
         next(error)
     }
 }
+
+
+// =========================================================== Delete comment 
+
+export const DeleteComment=async(req,res,next)=>{
+    try{
+        const comment=await Comment.findById(req.params.commentId)
+        if(!comment){
+            return next(404,"کامنتی باری حذف وجود دارد")
+        }
+
+
+        if(comment.userId !== req.user.id || !req.user.isadmin){
+            return next(errorHandler(403,"شما اجازه حذف این کامنت را ندارید"))
+        }
+
+        await Comment.findByIdAndDelete(req.params.commentId)
+        res.status(200).json("کامنت حذف شد")
+    }catch(error){
+        next(error)
+    }
+}
