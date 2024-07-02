@@ -44,7 +44,7 @@ export const getPostComments=async(req,res,next)=>{
 // ==================================================== Like Comment 
 export const LikeComment=async(req,res,next)=>{
  try{
-    const comment=await Comment.findbyId(req.params.commentId)
+    const comment=await Comment.findById(req.params.commentId)
 
     if(!comment){
         return next(errorHandler(404,"کامنت پیدا نشد"))
@@ -53,10 +53,10 @@ export const LikeComment=async(req,res,next)=>{
     const userIndex=comment.likes.indexOf(req.user.id)
     if(userIndex === -1){
         comment.nuberOfLikes+=1
-        comment.push(req.user.id)
+        comment.likes.push(req.user.id)
     }else{
         comment.nuberOfLikes-=1
-        comment.splice(userIndex,1)
+        comment.likes.splice(userIndex,1)
     }
 
     await comment.save()
@@ -64,4 +64,29 @@ export const LikeComment=async(req,res,next)=>{
  }catch(errro){
     next(errro)
  } 
+}
+
+
+// =============================================== Edit comment 
+export const EditComment=async(req,res,next)=>{
+
+
+    try{
+        const comment=await Comment.findById(req.params.commentId)
+        if(!comment){
+            return next(errorHandler(403,"کامنتی وجود ندارد"))
+        }
+
+        if(comment.userId !== req.user.id || !req.user.isadmin){
+            return next(errorHandler(403,"شمااجازه بروزرسانی این کامنت را ندارید"))
+        }
+
+        const updateComment=await Comment.findByIdAndUpdate(req.params.commentId,{
+            content:req.body.content
+        },{new:true})
+
+        res.status(200).json(updateComment)
+    }catch(error){
+        next(error)
+    }
 }

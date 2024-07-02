@@ -89,6 +89,15 @@ export default function CommentSection({ postId }) {
     }
   };
 
+  // ============================================================ Edit functionality
+
+  const handleEdit=async(comment,editContent)=>{
+    setComments(comments.map((c)=>
+      c._id === comment._id ? {...c,content:editContent} : c
+    ))
+  }
+
+  
 
   return (
     <div className='max-w-2xl mx-auto w-full p-3'>
@@ -153,11 +162,12 @@ export default function CommentSection({ postId }) {
               <p>{comments.length}</p>
             </div>
           </div>
-          {comments.map((comments)=>
+          {comments.map((comment)=>
           <Comment
-           key={comments._id}
-           comments={comments}
-           OnLike={handleLike}
+           key={comment._id}
+           comment={comment}
+           onLike={handleLike}
+           onEdit={handleEdit}
            />)}
 
           </>
