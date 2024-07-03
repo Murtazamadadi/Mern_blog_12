@@ -1,6 +1,6 @@
 import { Sidebar, SidebarItem, SidebarItemGroup, SidebarItems } from "flowbite-react"
 import { useEffect, useState } from "react"
-import { HiArrowSmRight, HiDocumentText, HiUser} from 'react-icons/hi'
+import { HiAnnotation, HiArrowSmRight, HiChartPie, HiDocumentText, HiUser} from 'react-icons/hi'
 import { Link, useLocation } from "react-router-dom"
 import { signOoutSuccess } from "../redux/user/userSlice"
 import { useDispatch, useSelector } from "react-redux"
@@ -54,6 +54,17 @@ function DashSidbar() {
     <Sidebar className=" w-full">
         <SidebarItems>
             <SidebarItemGroup className="flex flex-col gap-3">
+                {currentUser && currentUser.isadmin && (
+                  <Link to="/dashboard?tab=dash">
+                    <SidebarItem
+                    active={tab==="dash"}
+                    icon={HiChartPie}
+                    as="div"
+                    >
+                      داشبورد                      
+                    </SidebarItem>
+                  </Link>
+                )}
                 <Link to="/dashboard?tab=profile">
                     <SidebarItem
                     active={tab==="profile"}
@@ -84,6 +95,17 @@ function DashSidbar() {
                     as="div"
                     >
                     کاربران
+                    </SidebarItem>
+                  </Link>
+                )}
+                {currentUser.isadmin && (
+                  <Link to="/dashboard?tab=comments">
+                    <SidebarItem
+                    active={tab==="comments"}
+                    icon={HiAnnotation}
+                    as="div"
+                    >
+                    کامنت ها
                     </SidebarItem>
                   </Link>
                 )}

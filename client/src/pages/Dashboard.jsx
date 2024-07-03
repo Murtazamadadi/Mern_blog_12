@@ -4,6 +4,8 @@ import DashSidbar from "../components/DashSidbar"
 import { useEffect, useState } from "react"
 import DashPosts from "../components/DashPosts"
 import DashUsers from "../components/DashUsers"
+import DashComments from "../components/DashComments"
+import DashboardComp from "../components/DashboardComp"
 
 
 function Dashboard() {
@@ -29,6 +31,10 @@ function Dashboard() {
       {tab==="posts" && <DashPosts/>}
       {/* === Users === */}
       {tab === "users" && <DashUsers/>}
+      {/* === Comments */}
+      {tab === "comments" && <DashComments/>}
+      {/* === DashboardComp */}
+      {tab === "dash" && <DashboardComp/>}
     </div>
   )
 }

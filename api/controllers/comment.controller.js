@@ -102,12 +102,47 @@ export const DeleteComment=async(req,res,next)=>{
         }
 
 
-        if(comment.userId !== req.user.id || !req.user.isadmin){
+        if(comment.userId !== req.user.id && !req.user.isadmin){
             return next(errorHandler(403,"شما اجازه حذف این کامنت را ندارید"))
         }
 
         await Comment.findByIdAndDelete(req.params.commentId)
         res.status(200).json("کامنت حذف شد")
+    }catch(error){
+        next(error)
+    }
+}
+
+
+// ================================================================= get Comments
+export const getComments=async(req,res,next)=>{
+    if(!req.user.isadmin){
+        return next(errorHandler(404,"شمااجازه کیت کردن پست ها را ندارید"))
+    }
+
+    try{
+        const startIndex=parseInt(req.query.startIndex) || 0;
+        const limit=parseInt(req.query.limit) || 9;
+        const sortDirection=req.query.sort === "desc"? -1:1;
+
+        const comments=await Comment.find().sort({createdAt:sortDirection}).skip(startIndex).limit(limit)
+
+
+        const totalComments=await Comment.countDocuments()
+
+        const now=new Date()
+
+        const OneMonthAgo=new Date(
+            now.getFullYear(),
+            now.getMonth()-1,
+            now.getDate()
+        )
+
+        const lastMonthComments=await Comment.countDocuments({
+            createdAt:{$gte:OneMonthAgo}
+        })
+
+        res.status(200).json(comments,totalComments,lastMonthComments)
     }catch(error){
         next(error)
     }
