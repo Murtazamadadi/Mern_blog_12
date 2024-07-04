@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { toggleTheme } from '../redux/theme/ThemeSlice';
+import { useEffect, useState } from 'react';
 
 export default function Header() {
 
@@ -16,6 +17,10 @@ export default function Header() {
     const {currentUser}=useSelector((state)=>state.user)
     const dispatch=useDispatch()
     const {theme}=useSelector(state=>state.theme)
+    // ============================================ search 
+    const [searchTerm,setSearchTerm]=useState('')
+    const location=useLocation()
+
 
 
     // ============================================ singout functionality
@@ -40,9 +45,25 @@ export default function Header() {
       }
     }
    
+
+  // =========================================== search 
+  useEffect(()=>{
+    const urlParams=new URLSearchParams(location.search)
+    const searchTermFromUrl=urlParams.get("searchTerm")
+    if(searchTermFromUrl){
+      setSearchTerm(searchTermFromUrl)
+    }
+  },[location.search])
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('searchTerm', searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
   
-    
- 
   return (
     <Navbar className='border-b-2'>
       <Link
@@ -54,13 +75,15 @@ export default function Header() {
         </span>
         وبلاگ
       </Link>
-      <form>
+      <form onSubmit={handleSubmit}>
         <TextInput
           dir='rtl'
           type='text'
           placeholder='جستجو...'
           rightIcon={AiOutlineSearch}
           className='hidden lg:inline'
+          value={searchTerm}
+          onChange={(e)=>setSearchTerm(e.target.value)}
         />
       </form>
       <Button className='w-12 h-10 lg:hidden' color='gray' pill>
