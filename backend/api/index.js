@@ -8,7 +8,7 @@ import postRouter from "./routes/post.route.js"
 import commentRouter from "./routes/comment.route.js"
 import cookieParser from "cookie-parser"
 
-import path from "path"
+// import path from "path"
 
 
 dotenv.config()
@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO).then(()=>{
     console.log(err)
 })
 
-const __dirname=path.resolve()
+// const __dirname=path.resolve()
 const app=express()
 
 app.use(express.json())
@@ -38,12 +38,12 @@ app.use("/api/posts",postRouter)
 app.use("/api/comment",commentRouter)
 
 
-app.use(express.static(path.join(__dirname, '/client/dist')));
+// app.use(express.static(path.join(__dirname, '/client/dist')));
 
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-  });
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+//   });
 
 
 // =========================================Middleware
